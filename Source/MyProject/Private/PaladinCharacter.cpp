@@ -6,6 +6,9 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+
 // Sets default values
 APaladinCharacter::APaladinCharacter()
 {
@@ -30,6 +33,20 @@ APaladinCharacter::APaladinCharacter()
 void APaladinCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+
+		// get local player subsystem
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+
+			// add input mapping context to player subsystem 
+			Subsystem->AddMappingContext(InputMappingContext,  0);
+			
+		}
+		
+	}
 	
 }
 
@@ -45,5 +62,41 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// binding actions to player
+
+	if (UEnhancedInputComponent* Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+
+		Input -> BindAction(MoveAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Move);
+		
+	}
+	
+}
+
+void APaladinCharacter::Move(const FInputActionValue& InputValue)
+{
+
+	//convert input into FVector
+	FVector2d InputVector = InputValue.Get<FVector2d>();
+
+	//check if controller is valid for input
+	if (IsValid(Controller))
+	{
+		// get forward direction
+		FRotator Rotation = Controller -> GetControlRotation();
+
+		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+
+		FVector ForwardDirection = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+
+		FVector RightDirection = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
+		
+		//add movement input
+
+		AddMovementInput(ForwardDirection, InputVector.Y);
+
+		AddMovementInput(RightDirection, InputVector.X);
+	}
+	
 }
 
