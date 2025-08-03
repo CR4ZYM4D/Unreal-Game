@@ -35,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* MoveAction;
+
+	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
+	UInputAction* LookAction;
 	
 
 public:	
@@ -46,6 +49,8 @@ public:
 
 	//declaring the move function to handle movement inputs
 	void Move(const FInputActionValue& InputValue);
+
+	void Look(const FInputActionValue& InputValue);
 	
 private:
 

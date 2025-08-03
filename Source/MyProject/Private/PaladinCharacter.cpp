@@ -68,7 +68,7 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	{
 
 		Input -> BindAction(MoveAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Move);
-		
+		Input -> BindAction(LookAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Look);
 	}
 	
 }
@@ -97,6 +97,22 @@ void APaladinCharacter::Move(const FInputActionValue& InputValue)
 
 		AddMovementInput(RightDirection, InputVector.X);
 	}
+	
+}
+
+void APaladinCharacter::Look(const FInputActionValue& InputValue)
+{
+
+	const FVector2d LookDirection = InputValue.Get<FVector2d>();
+
+	if (IsValid(Controller))
+	{
+
+		AddControllerYawInput(LookDirection.X);
+		AddControllerPitchInput(LookDirection.Y);
+		
+	}
+	
 	
 }
 
