@@ -8,6 +8,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 APaladinCharacter::APaladinCharacter()
@@ -25,6 +26,11 @@ APaladinCharacter::APaladinCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));// initialize the camera
 	CameraComponent -> SetupAttachment(SpringArmComponent, USpringArmComponent :: SocketName); // attach to Spring arm socket
 	CameraComponent -> bUsePawnControlRotation = false; // dont rotate camera with player rotation
+
+	//setting jumpZvelocity and air control
+
+	GetCharacterMovement()->JumpZVelocity = 300.f;
+	GetCharacterMovement()->AirControl = 0.5f; // how much movement control player gets mid-air, 0 none 1 full
 	
 	
 }
@@ -69,6 +75,8 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		Input -> BindAction(MoveAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Move);
 		Input -> BindAction(LookAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Look);
+		Input -> BindAction(JumpAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Jump);
+
 	}
 	
 }
@@ -113,6 +121,32 @@ void APaladinCharacter::Look(const FInputActionValue& InputValue)
 		
 	}
 	
+	
+}
+
+void APaladinCharacter::Jump()
+{
+	Super::Jump();
+
+	//check if character is moving on ground
+	if (GetCharacterMovement()-> IsMovingOnGround() )
+	{
+		//get current forward velocity
+		FVector ForwardVelocity = GetVelocity();
+
+		//set its vertical (Z) component 0
+		ForwardVelocity.Z = 0.0;
+
+		//get character jump velocity
+		const float JumpVelocity = GetCharacterMovement()-> JumpZVelocity;
+
+		// add character jump velocity to current velocity to get launch velocity
+		FVector LaunchVelocity = ForwardVelocity + FVector(0.0, 0.0, JumpVelocity);
+
+		//launch character with said launch velocity
+		LaunchCharacter(LaunchVelocity, true, true);
+		
+	}
 	
 }
 

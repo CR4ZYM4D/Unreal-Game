@@ -38,6 +38,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
+	UInputAction* JumpAction;
 	
 
 public:	
@@ -51,7 +54,9 @@ public:
 	void Move(const FInputActionValue& InputValue);
 
 	void Look(const FInputActionValue& InputValue);
-	
+
+	void Jump();
+
 private:
 
 	//declare spring arm component
