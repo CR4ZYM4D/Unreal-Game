@@ -41,6 +41,16 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
+	UInputAction* SprintAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	float WalkSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	float RunSpeed;
+	
 	
 
 public:	
@@ -56,6 +66,10 @@ public:
 	void Look(const FInputActionValue& InputValue);
 
 	void Jump();
+
+	virtual void Run();
+
+	virtual void StopRunning();
 
 private:
 
