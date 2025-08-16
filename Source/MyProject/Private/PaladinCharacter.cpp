@@ -11,7 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
-APaladinCharacter::APaladinCharacter(): WalkSpeed(450.f), RunSpeed(600.f)
+APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,6 +47,7 @@ void APaladinCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 
+			this -> GetCharacterMovement()-> MaxWalkSpeed = WalkSpeed;
 			// add input mapping context to player subsystem 
 			Subsystem->AddMappingContext(InputMappingContext,  0);
 			
@@ -76,7 +77,7 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input -> BindAction(MoveAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Move);
 		Input -> BindAction(LookAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Look);
 		Input -> BindAction(JumpAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Jump);
-		Input -> BindAction(SprintAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Run);
+		Input -> BindAction(SprintAction, ETriggerEvent::Started, this, &APaladinCharacter::Run);
 		Input -> BindAction(SprintAction, ETriggerEvent::Completed, this, &APaladinCharacter::StopRunning);
 		
 
