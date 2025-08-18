@@ -32,25 +32,53 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType") // values can be changed in engine also
 	UInputMappingContext* InputMappingContext;
+	
+	// Input Actions Declarations
 
+	// movement and looking actions
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* LookAction;
 
+	//jumping actions
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* JumpAction;
 
+	//sprinting action
 	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
 	UInputAction* SprintAction;
 
+	//slow walking action
+	UPROPERTY(EditAnywhere, Category = "EnhancedInputType")
+	UInputAction* SlowWalkAction;
+
+	//attack actions
+
+	//light attack action
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UInputAction* LightAttackAction;
+
+	//heavy attack action
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UInputAction* HeavyAttackAction;
+
+	//special attack action
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UInputAction* SpecialAttackAction;
+	
+	//default walk speed
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
 	float WalkSpeed;
 
+	//running speed
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
 	float RunSpeed;
-	
+
+	//slow walking speed
+	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = "Movement")
+	float SlowWalkSpeed;
 	
 
 public:	
@@ -63,13 +91,25 @@ public:
 	//declaring the move function to handle movement inputs
 	void Move(const FInputActionValue& InputValue);
 
+	// look function to move camera around
 	void Look(const FInputActionValue& InputValue);
 
+	// take a wild fucking guess what these are for
 	void Jump();
+
+	virtual void StartSlowWalk();
+
+	virtual void StopSlowWalk();
 
 	virtual void Run();
 
 	virtual void StopRunning();
+
+	virtual void PerformLightAttack();
+
+	virtual void PerformHeavyAttack();
+
+	virtual void PerformSpecialAttack();
 
 private:
 

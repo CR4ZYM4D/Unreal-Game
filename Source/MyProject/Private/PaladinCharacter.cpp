@@ -11,7 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
-APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f)
+APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f), SlowWalkSpeed(200.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,10 +27,10 @@ APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f)
 	CameraComponent -> SetupAttachment(SpringArmComponent, USpringArmComponent :: SocketName); // attach to Spring arm socket
 	CameraComponent -> bUsePawnControlRotation = false; // dont rotate camera with player rotation
 
-	//setting jumpZvelocity and air control
+	//setting jump Z velocity and air control
 
 	GetCharacterMovement()->JumpZVelocity = 300.f;
-	GetCharacterMovement()->AirControl = 0.5f; // how much movement control player gets mid-air, 0 none 1 full
+	GetCharacterMovement()->AirControl = 0.5f; // how much movement control player gets midair, 0 none 1 full
 	
 	
 }
@@ -74,11 +74,21 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	if (UEnhancedInputComponent* Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 
-		Input -> BindAction(MoveAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Move);
+		//looking input action binds
 		Input -> BindAction(LookAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Look);
+
+		//movement input action binds
+		Input -> BindAction(MoveAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Move);
 		Input -> BindAction(JumpAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Jump);
 		Input -> BindAction(SprintAction, ETriggerEvent::Started, this, &APaladinCharacter::Run);
 		Input -> BindAction(SprintAction, ETriggerEvent::Completed, this, &APaladinCharacter::StopRunning);
+		Input -> BindAction(SlowWalkAction, ETriggerEvent::Started, this, &APaladinCharacter::StartSlowWalk);
+		Input -> BindAction(SlowWalkAction, ETriggerEvent::Completed, this, &APaladinCharacter::StopSlowWalk);
+
+		// attack input action binds
+		Input -> BindAction(LightAttackAction, ETriggerEvent::Triggered, this, &APaladinCharacter::PerformLightAttack);
+		Input -> BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::PerformHeavyAttack);
+		Input -> BindAction(SpecialAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::PerformSpecialAttack);
 		
 
 	}
@@ -154,6 +164,14 @@ void APaladinCharacter::Jump()
 	
 }
 
+void APaladinCharacter::StartSlowWalk()
+{
+}
+
+void APaladinCharacter::StopSlowWalk()
+{
+}
+
 void APaladinCharacter::Run()
 {
 
@@ -167,5 +185,17 @@ void APaladinCharacter::StopRunning()
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	
+}
+
+void APaladinCharacter::PerformLightAttack()
+{
+}
+
+void APaladinCharacter::PerformHeavyAttack()
+{
+}
+
+void APaladinCharacter::PerformSpecialAttack()
+{
 }
 
