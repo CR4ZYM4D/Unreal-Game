@@ -166,10 +166,16 @@ void APaladinCharacter::Jump()
 
 void APaladinCharacter::StartSlowWalk()
 {
+
+		GetCharacterMovement()->MaxWalkSpeed = SlowWalkSpeed;
+	
 }
 
 void APaladinCharacter::StopSlowWalk()
 {
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	
 }
 
 void APaladinCharacter::Run()
