@@ -16,6 +16,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
+class UAnimMontage;
 
 UCLASS()
 class MYPROJECT_API APaladinCharacter : public ACharacter
@@ -79,7 +80,9 @@ protected:
 	//slow walking speed
 	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = "Movement")
 	float SlowWalkSpeed;
-	
+
+	// function to play the anim montage
+	virtual void PlayMontage(class UAnimMontage* AnimMontage, float PlayRate = 1, FName SectionName = NAME_None);;	
 
 public:	
 	// Called every frame
@@ -120,5 +123,11 @@ private:
 	//declare camera component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
 	UCameraComponent* CameraComponent;
+
+	//Attack Anim Montage class
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montage", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* AttackMontage;
+
+	
 	
 };

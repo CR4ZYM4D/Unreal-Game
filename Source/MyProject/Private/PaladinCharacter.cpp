@@ -8,6 +8,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "PaladinAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -55,6 +56,25 @@ void APaladinCharacter::BeginPlay()
 		
 	}
 	
+}
+
+void APaladinCharacter::PlayMontage(class UAnimMontage* MontageToPlay, float PlayRate, FName SectionName)
+{
+
+	//getting current anim instance
+	UPaladinAnimInstance* CurrentInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
+
+	// checking that neither are null pointers 
+	if (CurrentInstance && MontageToPlay)
+	{
+		// checking that current montage is not already playing
+		if (!CurrentInstance -> Montage_IsPlaying(MontageToPlay))
+		{
+
+			PlayAnimMontage(MontageToPlay, PlayRate, SectionName);
+			
+		}
+	}
 }
 
 // Called every frame
@@ -195,13 +215,22 @@ void APaladinCharacter::StopRunning()
 
 void APaladinCharacter::PerformLightAttack()
 {
+
+	PlayMontage(AttackMontage, 1.0f, FName("LightAttack"));
+	
 }
 
 void APaladinCharacter::PerformHeavyAttack()
 {
+
+	PlayMontage(AttackMontage, 1.0f, FName("HeavyAttack"));
+	
 }
 
 void APaladinCharacter::PerformSpecialAttack()
 {
+
+	PlayMontage(AttackMontage, 1.0f, FName("SpecialAttack"));
+	
 }
 
