@@ -96,7 +96,7 @@ void APaladinCharacter::RightWeaponOverlap(UPrimitiveComponent* OverlappingCompo
 	if (IsValid(SweepResult.GetActor()) && SweepResult.GetActor() != this)
 	{
 
-		GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Attack sent"));
+		GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Attack sent"));
 		
 	}
 	
