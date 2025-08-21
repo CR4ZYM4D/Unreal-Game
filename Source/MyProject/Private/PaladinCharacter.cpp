@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "PaladinAnimInstance.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -33,7 +34,9 @@ APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f), SlowW
 	GetCharacterMovement()->JumpZVelocity = 300.f;
 	GetCharacterMovement()->AirControl = 0.5f; // how much movement control player gets midair, 0 none 1 full
 	
-	
+	//setting default weapon hitbox
+	RightWeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
+	RightWeaponBox->SetupAttachment(GetMesh(), FName("SwordSocket"));
 }
 
 // Called when the game starts or when spawned
@@ -55,6 +58,15 @@ void APaladinCharacter::BeginPlay()
 		}
 		
 	}
+
+	// binding function for right weapon overlap
+	RightWeaponBox -> OnComponentBeginOverlap.AddDynamic(this, &APaladinCharacter::RightWeaponOverlap);
+
+	//setting up right weapon collision
+	RightWeaponBox -> SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RightWeaponBox -> SetCollisionObjectType(ECollisionChannel:: ECC_WorldDynamic);
+	RightWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	RightWeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse:: ECR_Overlap);
 	
 }
 
@@ -75,6 +87,19 @@ void APaladinCharacter::PlayMontage(class UAnimMontage* MontageToPlay, float Pla
 			
 		}
 	}
+}
+
+void APaladinCharacter::RightWeaponOverlap(UPrimitiveComponent* OverlappingComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
+	if (IsValid(SweepResult.GetActor()) && SweepResult.GetActor() != this)
+	{
+
+		GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Attack sent"));
+		
+	}
+	
 }
 
 // Called every frame
@@ -107,8 +132,8 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		// attack input action binds
 		Input -> BindAction(LightAttackAction, ETriggerEvent::Triggered, this, &APaladinCharacter::PerformLightAttack);
-		Input -> BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::PerformHeavyAttack);
-		Input -> BindAction(SpecialAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::PerformSpecialAttack);
+		Input -> BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &APaladinCharacter::PerformHeavyAttack);
+		Input -> BindAction(SpecialAttackAction, ETriggerEvent::Triggered, this, &APaladinCharacter::PerformSpecialAttack);
 		
 
 	}
@@ -231,6 +256,20 @@ void APaladinCharacter::PerformSpecialAttack()
 {
 
 	PlayMontage(AttackMontage, 1.0f, FName("SpecialAttack"));
+	
+}
+
+void APaladinCharacter::DeactivateRightWeapon()
+{
+
+	RightWeaponBox -> SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+}
+
+void APaladinCharacter::ActivateRightWeapon()
+{
+
+	RightWeaponBox -> SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	
 }
 

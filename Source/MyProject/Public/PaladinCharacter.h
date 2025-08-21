@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
 #include "InputActionValue.h"
-
+#include "Components/BoxComponent.h"
 #include "PaladinCharacter.generated.h"
 
 
@@ -82,8 +81,18 @@ protected:
 	float SlowWalkSpeed;
 
 	// function to play the anim montage
-	virtual void PlayMontage(class UAnimMontage* AnimMontage, float PlayRate = 1, FName SectionName = NAME_None);;	
+	virtual void PlayMontage(class UAnimMontage* AnimMontage, float PlayRate = 1, FName SectionName = NAME_None);;
 
+	//function to check if weapon overlaps with something
+	UFUNCTION()
+	void RightWeaponOverlap(UPrimitiveComponent* OverlappingComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -114,6 +123,10 @@ public:
 
 	virtual void PerformSpecialAttack();
 
+	virtual void DeactivateRightWeapon();
+	
+	virtual void ActivateRightWeapon();
+
 private:
 
 	//declare spring arm component
@@ -128,6 +141,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montage", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* AttackMontage;
 
-	
+	//Right Weapon Hitbox component
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* RightWeaponBox;
 	
 };
