@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "HitInterface.h"
 #include "MeleeEnemy.generated.h"
 
 UCLASS()
-class MYPROJECT_API AMeleeEnemy : public ACharacter
+class MYPROJECT_API AMeleeEnemy : public ACharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -18,7 +19,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//override HitInterface implementation
+	virtual void HitInterface_Implementation(const FHitResult& SweepResult) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 

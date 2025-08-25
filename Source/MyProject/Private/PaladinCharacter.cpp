@@ -10,7 +10,11 @@
 #include "EnhancedInputComponent.h"
 #include "PaladinAnimInstance.h"
 #include "Components/BoxComponent.h"
+
+#include "HitInterface.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f), SlowWalkSpeed(200.f)
@@ -97,6 +101,15 @@ void APaladinCharacter::RightWeaponOverlap(UPrimitiveComponent* OverlappingCompo
 	{
 
 		GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Attack sent"));
+		IHitInterface* HitInterface = Cast<IHitInterface>(SweepResult.GetActor());
+
+		if (HitInterface != nullptr)
+		{
+			HitInterface->HitInterface_Implementation(SweepResult);
+		}
+
+		// apply damage to enemy
+		UGameplayStatics::ApplyDamage(SweepResult.GetActor(), Damage, GetController(), this, UDamageType::StaticClass());
 		
 	}
 	

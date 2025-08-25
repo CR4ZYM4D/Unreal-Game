@@ -144,5 +144,14 @@ private:
 	//Right Weapon Hitbox component
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* RightWeaponBox;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Combat",  meta = (AllowPrivateAccess= true))
+	float CurrentHealth;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Combat",  meta = (AllowPrivateAccess= true))
+	float MaxHealth;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Combat",  meta = (AllowPrivateAccess= true))
+	float Damage;
 	
 };
