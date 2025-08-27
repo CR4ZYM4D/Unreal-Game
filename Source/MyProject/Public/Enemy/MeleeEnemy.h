@@ -32,10 +32,21 @@ private:
 	float MaxHealth;
 	UPROPERTY(BlueprintReadWrite, Category = "Combat",  meta = (AllowPrivateAccess= true))
 	float Damage;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (allowPrivateAccess = true))
+	UAnimMontage* AttackMontage;
+
+	FTimerHandle AttackTimer;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
+	void MeleeAttack();
+
+	FName GetAttackName(const int32 SectionCount);
+
+	void ResetAttack();
 
 };
