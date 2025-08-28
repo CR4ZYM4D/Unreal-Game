@@ -45,7 +45,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void MeleeAttack();
 
-	FName GetAttackName(const int32 SectionCount);
+	FName GetRandomAttackName(const int32 SectionCount);
 
 	void ResetAttack();
 

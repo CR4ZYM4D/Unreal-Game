@@ -34,7 +34,7 @@ void AMeleeEnemy::MeleeAttack()
 		const int32 SectionCount = AttackMontage->CompositeSections.Num();
 
 		//get the name of a random section in the montage
-		const FName SectionName = GetAttackName(SectionCount);
+		const FName SectionName = GetRandomAttackName(SectionCount);
 		
 		//get the section index
 		const int32 SectionIndex = AttackMontage->GetSectionIndex(SectionName);
@@ -52,7 +52,7 @@ void AMeleeEnemy::MeleeAttack()
 	
 }
 
-FName AMeleeEnemy::GetAttackName(const int32 SectionCount)
+FName AMeleeEnemy::GetRandomAttackName(const int32 SectionCount)
 {
 	switch (const int32 Section {FMath :: RandRange(1, SectionCount)})
 	{
