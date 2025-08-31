@@ -3,7 +3,9 @@
 
 #include "Enemy/MeleeEnemy.h"
 
+#include "PaladinCharacter.h"
 #include "Enemy/MeleeEnemyAnimInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -11,12 +13,27 @@ AMeleeEnemy::AMeleeEnemy(): CurrentHealth(100.f), MaxHealth(100.f), Damage(40.f)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	WeaponHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponHitbox"));
+	WeaponHitbox -> SetupAttachment(GetMesh(),FName("SwordSocket"));
 }
 
 // Called when the game starts or when spawned
 void AMeleeEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	 // SetActorEnableCollision(false);
+	this -> GetCharacterMovement()-> MaxWalkSpeed = 200.f;
+
+	// binding function for right weapon overlap
+	WeaponHitbox -> OnComponentBeginOverlap.AddDynamic(this, &AMeleeEnemy::RightWeaponOverlap);
+
+	//setting up right weapon collision
+	WeaponHitbox -> SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponHitbox -> SetCollisionObjectType(ECollisionChannel:: ECC_WorldDynamic);
+	WeaponHitbox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	WeaponHitbox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse:: ECR_Overlap);
 	
 }
 
@@ -27,7 +44,7 @@ void AMeleeEnemy::MeleeAttack()
 	UMeleeEnemyAnimInstance* CurrentInstance =  Cast<UMeleeEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 
 	//check neither attack montage and current anim instance are null pointers
-	if (CurrentInstance != nullptr && AttackMontage != nullptr)
+	if (CurrentInstance && AttackMontage)
 	{
 
 		//get number of sections in attack montage
@@ -69,6 +86,25 @@ void AMeleeEnemy::ResetAttack()
 {
 }
 
+void AMeleeEnemy::RightWeaponOverlap(UPrimitiveComponent* OverlappingComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
+	//check if sweep hit something
+	if (IsValid(SweepResult.GetActor()) && SweepResult.GetActor() != this)
+	{
+		if (OtherActor)
+		{
+			APaladinCharacter* Player = Cast<APaladinCharacter>(OtherActor);
+			if (Player)
+			{
+				
+			}
+		}
+	}
+	
+}
+
 // Called every frame
 void AMeleeEnemy::Tick(float DeltaTime)
 {
@@ -97,4 +133,17 @@ float AMeleeEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	return DamageAmount;
 }
 
+void AMeleeEnemy::DeactivateRightWeapon()
+{
+
+	WeaponHitbox -> SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+}
+
+void AMeleeEnemy::ActivateRightWeapon()
+{
+
+	WeaponHitbox -> SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	
+}
 
