@@ -16,15 +16,15 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values
-APaladinCharacter::APaladinCharacter(): WalkSpeed(400.f), RunSpeed(600.f), SlowWalkSpeed(200.f)
+// Set default values
+APaladinCharacter::APaladinCharacter() : WalkSpeed(400.f), RunSpeed(600.f), SlowWalkSpeed(200.f), CurrentHealth(100.f),													 MaxHealth(100.f), Damage(18.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// create camera boom
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom")); // initialize camera boom
-	SpringArmComponent -> SetupAttachment(RootComponent); // attach camera arm to root component i.e player
+	SpringArmComponent -> SetupAttachment(RootComponent); // attach camera arm to root component i.e. player
 	SpringArmComponent -> TargetArmLength = 400.f; // set maximum distance of camera boom from player
 	SpringArmComponent -> bUsePawnControlRotation = true; // rotate camera arm along with player rotation
 
@@ -284,5 +284,23 @@ void APaladinCharacter::ActivateRightWeapon()
 
 	RightWeaponBox -> SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	
+}
+
+float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+
+	if (CurrentHealth - DamageAmount <= 0.f)
+	{
+		//play death animation and set HP to 0
+		GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Bro got skill checked"));
+		CurrentHealth = 0.f;
+	}
+	else
+	{
+		CurrentHealth-=DamageAmount;
+	}
+	
+	return DamageAmount;
 }
 

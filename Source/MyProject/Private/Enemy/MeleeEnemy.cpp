@@ -4,8 +4,10 @@
 #include "Enemy/MeleeEnemy.h"
 
 #include "PaladinCharacter.h"
+#include "Enemy/EnemyAIController.h"
 #include "Enemy/MeleeEnemyAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -14,8 +16,12 @@ AMeleeEnemy::AMeleeEnemy(): CurrentHealth(100.f), MaxHealth(100.f), Damage(40.f)
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Initializing Weapon Hitbox
 	WeaponHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponHitbox"));
 	WeaponHitbox -> SetupAttachment(GetMesh(),FName("SwordSocket"));
+
+	//Initializing AI Controller
+	AIController = Cast<AEnemyAIController>(GetController());
 }
 
 // Called when the game starts or when spawned
@@ -97,8 +103,11 @@ void AMeleeEnemy::RightWeaponOverlap(UPrimitiveComponent* OverlappingComponent, 
 		{
 			APaladinCharacter* Player = Cast<APaladinCharacter>(OtherActor);
 			if (Player)
-			{
-				
+			{ 
+				GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Attack received"));
+				IHitInterface* HitInterface = Cast<IHitInterface>(SweepResult.GetActor());
+
+				UGameplayStatics::ApplyDamage(Player, Damage, GetController(), this, UDamageType::StaticClass());
 			}
 		}
 	}
@@ -124,6 +133,7 @@ float AMeleeEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	{
 		CurrentHealth = 0.f;
 		//call death montage animation function from BP
+		GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Bro actually killed someone"));
 	}
 
 	else

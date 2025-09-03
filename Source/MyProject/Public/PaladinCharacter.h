@@ -123,9 +123,16 @@ public:
 
 	virtual void PerformSpecialAttack();
 
+	// functions to start and stop checking for collisions when in or out of attack animations
+
 	virtual void DeactivateRightWeapon();
 	
 	virtual void ActivateRightWeapon();
+
+	//function to take damage
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+								 class AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 

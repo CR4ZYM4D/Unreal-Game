@@ -9,6 +9,8 @@
 #include "MeleeEnemy.generated.h"
 
 class UAnimMontage;
+class AEnemyAIController;
+
 
 UCLASS()
 class MYPROJECT_API AMeleeEnemy : public ACharacter, public IHitInterface
@@ -71,5 +73,8 @@ protected:
 		int32 OtherBodyIndex,
 		bool bFromSweep,
 		const FHitResult& SweepResult);
+
+	// enemy AI controller class pointer
+	AEnemyAIController* AIController;
 	
 };
